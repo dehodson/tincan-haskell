@@ -4,6 +4,7 @@ import qualified Data.Text as T
 import Text.Read
 import Data.Char
 import Data.Map (Map)
+import System.Environment
 import qualified Data.Map as Map
 
 data Token = Dollar | At | Ampersand | Variable Char | Value Int deriving (Eq, Show)
@@ -88,4 +89,9 @@ executeProgram p = executeLine p line
 generateProgram :: [String] -> Program
 generateProgram xxs = Program (map tokenizeLine xxs) (length xxs) 0 0 [] False (Map.fromList $ zip ['A'..'Z'] (repeat 0))
 
-main = readFile "countdown.txt" >>= putStrLn . reverse . map chr . stack . until executionFinished executeProgram . generateProgram . map removeHash . stripLines . lines
+main = do 
+    args <- getArgs
+    case length args of
+        1 -> do prog <- readFile (head args)
+                putStrLn $ reverse . map chr . stack . until executionFinished executeProgram . generateProgram . map removeHash . stripLines . lines $ prog
+        _ -> do putStrLn "Usage: ./tincan.exe [filename]"
