@@ -91,7 +91,8 @@ generateProgram xxs = Program (map tokenizeLine xxs) (length xxs) 0 0 [] False (
 
 main = do 
     args <- getArgs
+    name <- getProgName
     case length args of
         1 -> do prog <- readFile (head args)
                 putStrLn $ reverse . map chr . stack . until executionFinished executeProgram . generateProgram . map removeHash . stripLines . lines $ prog
-        _ -> do putStrLn "Usage: ./tincan.exe [filename]"
+        _ -> do putStrLn $ "Usage: " ++ name ++ " [filename]"
